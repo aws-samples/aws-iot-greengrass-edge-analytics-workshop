@@ -10,6 +10,16 @@ build an edge-based analytics cache engine to support time-series processing
 functions, such as rolling statistics, and industrial-focused custom
 calculations, such as bursts of rotational telemetry metrics.
 
+## Getting Started
+
+Go to the workshop guide site at [http://bit.ly/33xJaNV](http://bit.ly/33xJaNV)
+
+or
+
+Read the workshop guide [workshop-guide/GUIDE.md](workshop-guide/GUIDE.md)
+
+Enjoy the workshop!
+
 ## License
 
 This library is licensed under the MIT-0 License. See the LICENSE file.
