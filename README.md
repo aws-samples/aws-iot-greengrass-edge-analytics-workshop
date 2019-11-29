@@ -1,11 +1,14 @@
-## My Project
+## IOT-405R - Performing Analytics at the Edge with AWS IoT Greengrass
 
-TODO: Fill this README out!
+Workshop to showcase how to perform IoT data analytics at the edge using
+AWS IoT Greengrass.
 
-Be sure to:
-
-* Change the title in this README
-* Edit your repository description on GitHub
+Industry 4.0 increasingly requires edge-centric analytics on telemetry data
+generated from machines and devices; for example, edge-based ML inferencing,
+and low-latency applications. In this workshop, you learn what it takes to
+build an edge-based analytics cache engine to support time-series processing
+functions, such as rolling statistics, and industrial-focused custom
+calculations, such as bursts of rotational telemetry metrics.
 
 ## License
 
