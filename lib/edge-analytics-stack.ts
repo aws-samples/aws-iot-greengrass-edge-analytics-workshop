@@ -497,7 +497,9 @@ export class EdgeAnalyticsStack extends cdk.Stack {
       })
     );
 
-    const core_instance_user_data = ec2.UserData.forLinux();
+    const core_instance_user_data = ec2.UserData.forLinux({
+      shebang: "#!/bin/bash -xe"
+    });
     core_instance_user_data.addCommands(
       "exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1",
       "apt-get update -y",
@@ -515,11 +517,11 @@ export class EdgeAnalyticsStack extends cdk.Stack {
       "systemctl enable redis-server.service",
       "systemctl enable nginx",
       "printf 'y' | bash <(curl -Ss https://my-netdata.io/kickstart-static64.sh)",
-      "wget https://d1onfpft10uf5o.cloudfront.net/greengrass-core/downloads/1.9.3/greengrass-linux-x86-64-1.9.3.tar.gz",
-      "tar -xzf greengrass-linux-x86-64-1.9.3.tar.gz -C /",
-      // "wget https://d1onfpft10uf5o.cloudfront.net/greengrass-core/downloads/1.10.0/greengrass-linux-x86-64-1.10.0.tar.gz",
-      // "tar -xzf greengrass-linux-x86-64-1.10.0.tar.gz -C /",
-      "pip3 install awscli pandas redis==3.3.4 greengrasssdk==1.4.0 --upgrade",
+      // "wget https://d1onfpft10uf5o.cloudfront.net/greengrass-core/downloads/1.9.3/greengrass-linux-x86-64-1.9.3.tar.gz",
+      // "tar -xzf greengrass-linux-x86-64-1.9.3.tar.gz -C /",
+      "wget https://d1onfpft10uf5o.cloudfront.net/greengrass-core/downloads/1.10.0/greengrass-linux-x86-64-1.10.0.tar.gz",
+      "tar -xzf greengrass-linux-x86-64-1.10.0.tar.gz -C /",
+      "pip3 install awscli pandas redis==3.3.4 greengrasssdk==1.5.0 --upgrade",
       cdk.Fn.sub("${command}", {
         command: `aws secretsmanager get-secret-value --secret-id Greengrass-Core-Credentials --region  ${this.region} | jq --raw-output '.SecretString' | jq -r '.[0].certificatePem' > /greengrass/certs/${core.thingName}.certificate.pem`
       }),
@@ -540,9 +542,6 @@ export class EdgeAnalyticsStack extends cdk.Stack {
         command: `{"coreThing":{"caPath":"root.ca.pem","certPath":"${core.thingName}.certificate.pem","keyPath":"${core.thingName}.private.key","thingArn":"arn:aws:iot:${this.region}:${this.account}:thing/${core.thingName}","iotHost":"${core_credentials.iotEndpoint}","ggHost":"greengrass-ats.iot.${this.region}.amazonaws.com","keepAlive":600},"runtime":{"cgroup":{"useSystemd":"yes"}},"managedRespawn":false,"crypto":{"principals":{"SecretsManager":{"privateKeyPath":"file:///greengrass/certs/${core.thingName}.private.key"},"IoTCertificate":{"privateKeyPath":"file:///greengrass/certs/${core.thingName}.private.key","certificatePath":"file:///greengrass/certs/${core.thingName}.certificate.pem"}},"caPath":"file:///greengrass/certs/root.ca.pem"}}`
       }),
       "service greengrass start",
-      cdk.Fn.sub("${command}", {
-        command: `aws greengrass create-deployment --deployment-type "NewDeployment" --group-id ${greengrass_group.attrId} --group-version-id ${greengrass_group_version.ref} --region  ${this.region}`
-      }),
       "curl -o /tmp/userdata.sh http://169.254.169.254/latest/user-data"
     );
 
@@ -557,7 +556,9 @@ export class EdgeAnalyticsStack extends cdk.Stack {
       userData: core_instance_user_data
     });
 
-    const node_red_instance_user_data = ec2.UserData.forLinux();
+    const node_red_instance_user_data = ec2.UserData.forLinux({
+      shebang: "#!/bin/bash -xe"
+    });
     node_red_instance_user_data.addCommands(
       "exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1",
       "su ubuntu",
