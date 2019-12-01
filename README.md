@@ -20,7 +20,15 @@ Read the workshop guide [workshop-guide/GUIDE.md](workshop-guide/GUIDE.md)
 
 Enjoy the workshop!
 
+## Some Useful Commands
+
+ * `npm run build`   compile typescript to js
+ * `npm run watch`   watch for changes and compile
+ * `npm run test`    perform the jest unit tests
+ * `cdk deploy`      deploy this stack to your default AWS account/region
+ * `cdk diff`        compare deployed stack with current state
+ * `cdk synth`       emits the synthesized CloudFormation template
+
 ## License
 
 This library is licensed under the MIT-0 License. See the LICENSE file.
-
