@@ -487,11 +487,13 @@ export class EdgeAnalyticsStack extends cdk.Stack {
       new iam.PolicyStatement({
         resources: [
           greengrass_group.attrArn,
-          `${greengrass_group.attrArn}/certificateauthorities/*`
+          `${greengrass_group.attrArn}/certificateauthorities/*`,
+          `arn:aws:greengrass:${this.region}:${this.account}:/greengrass/things/${core.thingName}/connectivityInfo`
         ],
         actions: [
           "greengrass:ListGroupCertificateAuthorities",
           "greengrass:GetGroupCertificateAuthority",
+          "greengrass:UpdateConnectivityInfo",
           "greengrass:CreateDeployment"
         ]
       })

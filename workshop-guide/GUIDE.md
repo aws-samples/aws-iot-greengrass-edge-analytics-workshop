@@ -4,7 +4,7 @@
 
 - AWS Account
 - A laptop with internet access
-- Use `us-east-1` or `us-west-2` AWS Regions only.
+- Use `us-east-1` AWS Region only.
 
 ## Exercise 1: Setting up your environment for the workshop
 
@@ -97,11 +97,11 @@ EdgeAnalyticsStack.NodeRedDashboardURL: http://{IoT Device IP-Address}/node-red/
 17. Navigate to AWS IoT Core Service within your AWS Console
 
     > For **us-east-1** region click https://console.aws.amazon.com/iot/home?region=us-east-1#/greengrass/grouphub
-    > For **us-west-1** region click https://console.aws.amazon.com/iot/home?region=us-west-1#/greengrass/grouphub
 
 18. Click on your Greengrass Group tile to view additional actions
 19. Click on Actions dropdown menu and select Deploy. This action deploys your Greengrass Group and its associated configurations to your Greengrass Core Instance. If prompted for Greengrass Core Discovery options, select Auto Discovery option.
-20. Open a new terminal by selecting Window > New Terminal from Cloud9 commands. SSH to your Node Red Instance by typing the command below in your new terminal.
+20. Verify the Greengrass Group Deployment is successufully completed.
+21. Open a new terminal by selecting Window > New Terminal from Cloud9 commands. SSH to your Node Red Instance by typing the command below in your new terminal.
 
 ```
 ssh -i ee-default-keypair.pem ubuntu@{IoT Device IP-Address}
@@ -109,7 +109,7 @@ ssh -i ee-default-keypair.pem ubuntu@{IoT Device IP-Address}
 
 Note: IP Address from `EdgeAnalyticsStack.NodeRedURL` output of `cdk deploy`
 
-21. Once logged in, run the following commands. The inputs required for the commands are `Greengrass Group Id` and `AWS Region` which were provided as ouputs in **Step 16**. Please substitute {Greengrass Group Id} and {AWS Region} with values from Step 16.
+22. Once logged in, run the following commands. The inputs required for the commands are `Greengrass Group Id` and `AWS Region` which were provided as ouputs in **Step 16**. Please substitute {Greengrass Group Id} and {AWS Region} with values from Step 16.
 
 ```
 CERTIFICATE_AUTHORITY_ID=$(aws greengrass list-group-certificate-authorities --group-id {Greengrass Group Id} --region {AWS Region} | jq -r '.GroupCertificateAuthorities[0].GroupCertificateAuthorityId')
@@ -118,18 +118,18 @@ aws greengrass get-group-certificate-authority --certificate-authority-id $CERTI
 
 ```
 
-This manual action is required because Greengrass Group Certificate can only be retrieved after the Greengrass Group is deployed (See **Step 19**). Restart Node Red for the new certificate to be included by Node Red.
+This manual action is required because Greengrass Group Certificate can only be retrieved after the Greengrass Group is deployed (See **Step 20**). Restart Node Red for the new certificate to be included by Node Red.
 
 ```
 pm2 restart node-red
 ```
 
-22. Navigate to the Node-Red URL. This Node-Red setup simulates an AWS IoT Thing sending MQTT messages containing metrics like temperature (in fahrenheit), pressure (in psi) and humidity (in percent). Click on **Debug messages** button
+23. Navigate to the Node-Red URL. This Node-Red setup simulates an AWS IoT Thing sending MQTT messages containing metrics like temperature (in fahrenheit), pressure (in psi) and humidity (in percent). Click on **Debug messages** button
     ![](images/Node-RED-Step-15.png)
 
-23. To switch on the simulated AWS IoT Thing, click the ON Switch Node in Node-Red. You should see temperature, pressure and humidity readings being transmitted to AWS Greengrass Core in the **debug** pane.
-24. Navigate to the Node-Red Dashboard URL received in CDK deployment output in **Step 16**. You should now be able to see a live chart with temperature, pressure and humidity plotted over time range. You might notice that during some instants in time, there might be missing metrics in temperature, pressure or humidity. Also you might notice that the time-axis does not have contiguous timestamp values. This behavior refects IoT devices which transmit metrics only on change.
-25. To switch off the simulated AWS IoT Thing, click the OFF Switch Node in Node-Red. The transmission of temperature, pressure and humidity readings should now appear stopped in the **debug** pane.
+24. To switch on the simulated AWS IoT Thing, click the ON Switch Node in Node-Red. You should see temperature, pressure and humidity readings being transmitted to AWS Greengrass Core in the **debug** pane.
+25. Navigate to the Node-Red Dashboard URL received in CDK deployment output in **Step 16**. You should now be able to see a live chart with temperature, pressure and humidity plotted over a time range. You might notice that during some instants in time, there might be missing metrics in temperature, pressure or humidity. Also you might notice that the time-axis does not have contiguous timestamp values. This behavior refects IoT devices which transmit metrics only on change.
+26. To switch off the simulated AWS IoT Thing, click the OFF Switch Node in Node-Red. The transmission of temperature, pressure and humidity readings should now appear stopped in the **debug** pane.
 
 ## Exercise 2: Filling up missing metrics
 
@@ -153,11 +153,11 @@ raw_df = raw_df.resample('{0}S'.format(min_resolution_seconds), loffset=calculat
 cdk deploy
 ```
 
-Also navigate to your greengrass group in AWS IoT Core and deploy the changes to your Greengrass Core Instance.
+28. Navigate to your greengrass group in AWS IoT Core and deploy the changes to your Greengrass Core Instance.
 
-28. Now switch ON your simulated IoT Thing in Node-Red and navigate to your Dashboard URL. You should be able to see that none of the metrics - temperature, pressure or humidity are missing in the live chart and the timestamps in time-axis are now contiguous. This demonstrates IoT metrics that are **"filled in time-series"**
+29. Now switch ON your simulated IoT Thing in Node-Red and navigate to your Dashboard URL. You should be able to see that none of the metrics - temperature, pressure or humidity are missing in the live chart and the timestamps in time-axis are now contiguous. This demonstrates IoT metrics that are **"filled in time-series"**
 
-29. To switch off the simulated AWS IoT Thing, click the OFF Switch Node in Node-RED. The transmission of temperature, pressure and humidity readings should now appear stopped in the **debug** pane.
+30. To switch off the simulated AWS IoT Thing, click the OFF Switch Node in Node-RED. The transmission of temperature, pressure and humidity readings should now appear stopped in the **debug** pane.
 
 ## Exercise 3: Performing statistical calculations on time-series data
 
@@ -165,7 +165,7 @@ In this exercise, we will perfom rolling statitistical calculations like `Mean` 
 
 ### Steps:
 
-30. In your Cloud9 environment, open the file **AnalyzerLambda.py**. Populate the placeholder lines for `Code exercise for rolling statistical calculation...` with the code below:
+31. In your Cloud9 environment, open the file **AnalyzerLambda.py**. Populate the placeholder lines for `Code exercise for rolling statistical calculation...` with the code below:
 
 ```
 mean_df = raw_df.rolling(min_resolution_seconds, min_periods=1).mean()
@@ -175,24 +175,24 @@ std_df.columns = [str(col) + '_std' for col in std_df.columns]
 raw_df = pd.concat([raw_df, mean_df, std_df], axis=1)
 ```
 
-31. Save the file **AnalyzerLambda.py**. Deploy the changes to your Analyzer Lambda into greengrass with AWS CDK
+32. Save the file **AnalyzerLambda.py**. Deploy the changes to your Analyzer Lambda into greengrass with AWS CDK
 
 ```
 cdk deploy
 ```
 
-Also navigate to your greengrass group in AWS IoT Core and deploy the changes to your Greengrass Core Instance.
+33. Navigate to your greengrass group in AWS IoT Core and deploy the changes to your Greengrass Core Instance.
 
-32. Now switch ON your simulated IoT Thing in Node-Red and navigate to your Dashboard URL. You should be able to see a rolling mean and standard deviation plot of metrics - mean_temperature, mean_pressure, mean_humidity, std_temperature, std_pressure and std_humidity along with raw values of the filled time-series metrics - temperature, pressure and humidity. This demonstrates statistical calculations on IoT metrics that are **"filled in time-series"**.
+34. Now switch ON your simulated IoT Thing in Node-Red and navigate to your Dashboard URL. You should be able to see a rolling mean and standard deviation plot of metrics - mean_temperature, mean_pressure, mean_humidity, std_temperature, std_pressure and std_humidity along with raw values of the filled time-series metrics - temperature, pressure and humidity. This demonstrates statistical calculations on IoT metrics that are **"filled in time-series"**.
 
 ## Exercise 4: Clean-up environment
 
-33. In order to clean up the resources created in this workshop, navigate to your greengrass group in AWS IoT Core and **Reset Deployment** of your Greengrass Group.
+35. In order to clean up the resources created in this workshop, navigate to your greengrass group in AWS IoT Core and **Reset Deployment** of your Greengrass Group.
 
-Now delete all the resources created with AWS CDK, run the following command in your Cloud9 environment
+36. Delete all the resources created with AWS CDK, run the following command in your Cloud9 environment
 
 ```
 cdk destroy
 ```
 
-34. To delete your Cloud9 environment, go to your [Cloud9 dashboard](https://console.aws.amazon.com/cloud9/home) and delete the Cloud9 environment created in Steps 1 - 5.
+37. To delete your Cloud9 environment, go to your [Cloud9 dashboard](https://console.aws.amazon.com/cloud9/home) and delete the Cloud9 environment created in Steps 1 - 5.
