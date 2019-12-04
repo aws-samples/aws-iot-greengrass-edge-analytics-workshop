@@ -137,7 +137,7 @@ In this exercise, we will fill up missing metrics as they are transmitted throug
 
 ### Steps:
 
-26. In your Cloud9 environment, open the file **AnalyzerLambda.py**. Populate the placeholder lines `Code exercise for filling missing metrics...` with the code below:
+26. In your Cloud9 environment, open the file **analyzer-lambda.py**. Populate the placeholder lines `Code exercise for filling missing metrics...` with the code below:
 
 ```
 timeline_df = get_source_dataframe(end_time, '1S')
@@ -147,7 +147,7 @@ raw_df = raw_df.fillna(method='backfill')
 raw_df = raw_df.resample('{0}S'.format(min_resolution_seconds), loffset=calculated_offset).mean()
 ```
 
-27. Save the file **AnalyzerLambda.py**. Deploy the changes to your Analyzer Lambda into greengrass with AWS CDK
+27. Save the file **analyzer-lambda.py**. Deploy the changes to your Analyzer Lambda into greengrass with AWS CDK
 
 ```
 cdk deploy
@@ -161,15 +161,11 @@ cdk deploy
 
 ## Exercise 3: Performing statistical calculations on time-series data
 
-In this exercise, we will perfom rolling statitistical calculations like `Mean` and `Standard Deviation` on the filled time-series data produced by **AnalyzerLambda.py**.
+In this exercise, we will perfom rolling statitistical calculations like `Mean` and `Standard Deviation` on the filled time-series data produced by **analyzer-lambda.py**.
 
 ### Steps:
 
-<<<<<<< HEAD
-
-30. # In your Cloud9 environment, open the file **AnalyzerLambda.py**. Populate the placeholder lines for `Code exercise for rolling statistical calculation...` with the code below:
-31. In your Cloud9 environment, open the file **AnalyzerLambda.py**. Populate the placeholder lines for `Code exercise for rolling statistical calculation...` with the code below:
-    > > > > > > > reinvent
+31. In your Cloud9 environment, open the file **analyzer-lambda.py**. Populate the placeholder lines for `Code exercise for rolling statistical calculation...` with the code below:
 
 ```
 mean_df = raw_df.rolling(min_resolution_seconds, min_periods=1).mean()
@@ -179,7 +175,7 @@ std_df.columns = [str(col) + '_std' for col in std_df.columns]
 raw_df = pd.concat([raw_df, mean_df, std_df], axis=1)
 ```
 
-32. Save the file **AnalyzerLambda.py**. Deploy the changes to your Analyzer Lambda into greengrass with AWS CDK
+32. Save the file **analyzer-lambda.py**. Deploy the changes to your Analyzer Lambda into greengrass with AWS CDK
 
 ```
 cdk deploy
