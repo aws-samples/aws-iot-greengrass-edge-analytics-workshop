@@ -1,2 +1,2 @@
-redis==3.3.4
+redis==4.4.4
 greengrasssdk==1.4.0
